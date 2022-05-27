@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+/**
+ * Responsible for initial database content handling
+ * from passed json file (as command line argument)
+ */
 @Service
 public class InitService {
     private final ApplicationArguments arguments;
@@ -25,9 +29,14 @@ public class InitService {
         this.accountRepo = accountRepo;
     }
 
-    public void initDatabaseFromFile() {
+    /**
+     * Reads and parses json file passed in first argument.
+     * @return true: parsed successfully; false: file doesn't exist;
+     * argument wasn't passed; json parse error occurred.
+     */
+    public boolean initDatabaseFromFile() {
         if (arguments.getSourceArgs().length == 0) {
-            return;
+            return false;
         }
 
         String filename = arguments.getSourceArgs()[1];
@@ -38,10 +47,12 @@ public class InitService {
 
             InitData data = gson.fromJson(reader, InitData.class);
 
-            accountRepo.saveAll(data.getAccounts());
-            bookRepo.saveAll(data.getBooks());
+            accountRepo.saveAllAndFlush(data.getAccounts());
+            bookRepo.saveAllAndFlush(data.getBooks());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 }
