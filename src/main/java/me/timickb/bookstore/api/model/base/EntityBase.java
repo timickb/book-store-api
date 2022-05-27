@@ -1,4 +1,4 @@
-package me.timickb.bookstore.api.model;
+package me.timickb.bookstore.api.model.base;
 
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class EntityBase implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public long id;
+    private long id;
 }
