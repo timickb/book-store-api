@@ -21,16 +21,20 @@ public class InitService {
     private final ApplicationArguments arguments;
     private final BookRepository bookRepo;
     private final AccountRepository accountRepo;
+    private final Gson gson;
 
     @Autowired
-    public InitService(ApplicationArguments arguments, BookRepository bookRepo, AccountRepository accountRepo) {
+    public InitService(ApplicationArguments arguments, BookRepository bookRepo,
+                       AccountRepository accountRepo, Gson gson) {
         this.arguments = arguments;
         this.bookRepo = bookRepo;
         this.accountRepo = accountRepo;
+        this.gson = gson;
     }
 
     /**
      * Reads and parses json file passed in first argument.
+     *
      * @return true: parsed successfully; false: file doesn't exist;
      * argument wasn't passed; json parse error occurred.
      */
@@ -39,12 +43,10 @@ public class InitService {
             return false;
         }
 
-        String filename = arguments.getSourceArgs()[1];
+        String filename = arguments.getSourceArgs()[0];
 
         try {
             JsonReader reader = new JsonReader(new FileReader(filename));
-            Gson gson = new Gson();
-
             InitData data = gson.fromJson(reader, InitData.class);
 
             accountRepo.saveAllAndFlush(data.getAccounts());
