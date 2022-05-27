@@ -4,9 +4,12 @@ import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.request.DealRequest;
+import me.timickb.bookstore.api.model.response.DealResponse;
 import me.timickb.bookstore.api.repository.AccountRepository;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.DealRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ public class MarketService {
     private final DealRepository dealRepo;
     private final AccountRepository accountRepo;
     private final BookRepository bookRepo;
+
+    private final Logger logger = LoggerFactory.getLogger(InitService.class);
 
     @Autowired
     public MarketService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo) {
@@ -36,27 +41,32 @@ public class MarketService {
         return bookRepo.findById(id);
     }
 
-    public boolean makeDeal(DealRequest request) {
+    public DealResponse makeDeal(DealRequest request) {
+        DealResponse response = new DealResponse();
         Optional<Book> bookOptional = getBookById(request.getBookId());
         Optional<Account> accountOptional = accountRepo.findById(request.getAccountId());
 
         if (bookOptional.isEmpty()) {
-            return false;
+            response.setMessage("Book with id %d doesn't exist".formatted(request.getBookId()));
+            return response;
         }
 
         if (accountOptional.isEmpty()) {
-            return false;
+            response.setMessage("Account with id %d doesn't exist".formatted(request.getAccountId()));
+            return response;
         }
 
         Book wantedBook = bookOptional.get();
         Account buyer = accountOptional.get();
 
         if (request.getAmount() > wantedBook.getAmount()) {
-            return false;
+            response.setMessage("Not enough books left :(");
+            return response;
         }
 
         if (wantedBook.getPrice() * request.getAmount() > buyer.getBalance()) {
-            return false;
+            response.setMessage("This account doesn't have enough money :(");
+            return response;
         }
 
         List<Deal> existingDeals = dealRepo.findAll().stream()
@@ -84,6 +94,8 @@ public class MarketService {
         }
         dealRepo.saveAndFlush(deal);
 
-        return true;
+        response.setMessage("Deal succeeded!");
+        response.setSucceeded(true);
+        return response;
     }
 }

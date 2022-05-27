@@ -1,10 +1,13 @@
 package me.timickb.bookstore.api.service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import me.timickb.bookstore.api.model.init.InitData;
 import me.timickb.bookstore.api.repository.AccountRepository;
 import me.timickb.bookstore.api.repository.BookRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ public class InitService {
     private final AccountRepository accountRepo;
     private final Gson gson;
 
+    private final Logger logger = LoggerFactory.getLogger(InitService.class);
+
     @Autowired
     public InitService(ApplicationArguments arguments, BookRepository bookRepo,
                        AccountRepository accountRepo, Gson gson) {
@@ -38,12 +43,14 @@ public class InitService {
      * @return true: parsed successfully; false: file doesn't exist;
      * argument wasn't passed; json parse error occurred.
      */
-    public boolean initDatabaseFromFile() {
+    public void initDatabaseFromFile() {
         if (arguments.getSourceArgs().length == 0) {
-            return false;
+            logger.info("Initial JSON file not specified, skip reading data");
+            return;
         }
 
         String filename = arguments.getSourceArgs()[0];
+        logger.info("Detected initial data file " + filename + ", trying to read it...");
 
         try {
             JsonReader reader = new JsonReader(new FileReader(filename));
@@ -51,10 +58,14 @@ public class InitService {
 
             accountRepo.saveAllAndFlush(data.getAccounts());
             bookRepo.saveAllAndFlush(data.getBooks());
+
+            logger.info("Initial data successfully parsed and pushed into database!");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return false;
+            logger.error("Unable to read initial data file: file not found");
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            logger.error("Unable to read initial data file: invalid JSON syntax");
         }
-        return true;
     }
 }

@@ -3,12 +3,14 @@ package me.timickb.bookstore.api.controller;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.request.DealRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
+import me.timickb.bookstore.api.model.response.DealResponse;
 import me.timickb.bookstore.api.service.AccountService;
 import me.timickb.bookstore.api.service.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,10 +59,11 @@ public class ApiController {
     }
 
     @PostMapping("/market/deal")
-    public ResponseEntity makeDeal(@RequestBody DealRequest request) {
-        if (marketService.makeDeal(request)) {
-            return ResponseEntity.ok("Ok");
+    public ResponseEntity<DealResponse> makeDeal(@RequestBody DealRequest request) {
+        DealResponse response = marketService.makeDeal(request);
+        if (response.isSucceeded()) {
+            return ResponseEntity.ok(response);
         }
-        return ResponseEntity.badRequest().body("Invalid query");
+        return ResponseEntity.badRequest().body(response);
     }
 }
