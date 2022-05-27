@@ -4,12 +4,10 @@ import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.request.DealRequest;
-import me.timickb.bookstore.api.model.response.DealResponse;
+import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.repository.AccountRepository;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.DealRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +20,6 @@ public class MarketService {
     private final DealRepository dealRepo;
     private final AccountRepository accountRepo;
     private final BookRepository bookRepo;
-
-    private final Logger logger = LoggerFactory.getLogger(InitService.class);
 
     @Autowired
     public MarketService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo) {
@@ -41,8 +37,32 @@ public class MarketService {
         return bookRepo.findById(id);
     }
 
-    public DealResponse makeDeal(DealRequest request) {
-        DealResponse response = new DealResponse();
+    public PostResponse createBook(Book book) {
+        PostResponse response = new PostResponse();
+        if (book.getPrice() <= 0) {
+            response.setMessage("Price should be positive");
+            return response;
+        }
+        if (book.getAmount() < 0) {
+            response.setMessage("Amount should be non-negative");
+            return response;
+        }
+        if (book.getAuthor().isEmpty()) {
+            response.setMessage("Author name should be non-empty");
+            return response;
+        }
+        if (book.getName().isEmpty()) {
+            response.setMessage("Book name should be non-empty");
+            return response;
+        }
+        bookRepo.saveAndFlush(book);
+        response.setSucceeded(true);
+        response.setMessage("Book added!");
+        return response;
+    }
+
+    public PostResponse makeDeal(DealRequest request) {
+        PostResponse response = new PostResponse();
         Optional<Book> bookOptional = getBookById(request.getBookId());
         Optional<Account> accountOptional = accountRepo.findById(request.getAccountId());
 
