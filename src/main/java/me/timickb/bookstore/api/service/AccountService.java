@@ -47,4 +47,22 @@ public class AccountService {
         return response;
     }
 
+    public PostResponse edit(Account edited, long id) {
+        PostResponse response = new PostResponse();
+        Optional<Account> existing = accountRepo.findById(id);
+
+        if (existing.isEmpty()) {
+            response.setMessage("Account with id %d doesn't exist".formatted(id));
+            return response;
+        }
+
+        Account account = existing.get();
+        account.setBalance(edited.getBalance());
+        accountRepo.saveAndFlush(account);
+
+        response.setMessage("Account updated!");
+        response.setSucceeded(true);
+        return response;
+    }
+
 }

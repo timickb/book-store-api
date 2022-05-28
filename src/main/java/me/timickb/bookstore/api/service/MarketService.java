@@ -28,6 +28,22 @@ public class MarketService {
         this.bookRepo = bookRepo;
     }
 
+    private String checkBook(Book book) {
+        if (book.getPrice() <= 0) {
+            return "Price should be positive";
+        }
+        if (book.getAmount() < 0) {
+            return "Amount should be non-negative";
+        }
+        if (book.getAuthor().isEmpty()) {
+            return "Author name should be non-empty";
+        }
+        if (book.getName().isEmpty()) {
+            return "Book name should be non-empty";
+        }
+        return "";
+    }
+
     public List<Book> getAllBooks() {
         return bookRepo.findAll().stream()
                 .filter(b -> b.getAmount() > 0).collect(Collectors.toList());
@@ -39,25 +55,43 @@ public class MarketService {
 
     public PostResponse createBook(Book book) {
         PostResponse response = new PostResponse();
-        if (book.getPrice() <= 0) {
-            response.setMessage("Price should be positive");
+        String checkResult = checkBook(book);
+
+        if (!checkResult.isEmpty()) {
+            response.setMessage(checkResult);
             return response;
         }
-        if (book.getAmount() < 0) {
-            response.setMessage("Amount should be non-negative");
-            return response;
-        }
-        if (book.getAuthor().isEmpty()) {
-            response.setMessage("Author name should be non-empty");
-            return response;
-        }
-        if (book.getName().isEmpty()) {
-            response.setMessage("Book name should be non-empty");
-            return response;
-        }
+
         bookRepo.saveAndFlush(book);
         response.setSucceeded(true);
         response.setMessage("Book added!");
+        return response;
+    }
+
+    public PostResponse editBook(Book edited, long id) {
+        PostResponse response = new PostResponse();
+        Optional<Book> existing = bookRepo.findById(id);
+
+        if (existing.isEmpty()) {
+            response.setMessage("Book with id %d doesn't exist".formatted(id));
+            return response;
+        }
+
+        String checkResult = checkBook(edited);
+        if (!checkResult.isEmpty()) {
+            response.setMessage(checkResult);
+            return response;
+        }
+
+        Book book = existing.get();
+        book.setPrice(edited.getPrice());
+        book.setAuthor(edited.getAuthor());
+        book.setName(edited.getName());
+        book.setAmount(edited.getAmount());
+        bookRepo.saveAndFlush(book);
+
+        response.setMessage("Book updated!");
+        response.setSucceeded(true);
         return response;
     }
 
