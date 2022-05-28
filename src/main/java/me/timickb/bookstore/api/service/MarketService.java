@@ -95,6 +95,22 @@ public class MarketService {
         return response;
     }
 
+    public PostResponse deleteBook(long id) {
+        PostResponse response = new PostResponse();
+        Optional<Book> existing = bookRepo.findById(id);
+
+        if (existing.isEmpty()) {
+            response.setMessage("Book with id %d doesn't exist".formatted(id));
+            return response;
+        }
+
+        bookRepo.delete(existing.get());
+
+        response.setMessage("Book deleted");
+        response.setSucceeded(true);
+        return response;
+    }
+
     public PostResponse makeDeal(DealRequest request) {
         PostResponse response = new PostResponse();
         Optional<Book> bookOptional = getBookById(request.getBookId());

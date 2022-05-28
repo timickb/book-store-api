@@ -57,4 +57,13 @@ public class AccountController {
         }
         return ResponseEntity.badRequest().body(response);
     }
+
+    @DeleteMapping("{accountId}")
+    public ResponseEntity<PostResponse> deleteAccount(@PathVariable Long accountId) {
+        PostResponse response = accountService.delete(accountId);
+        if (response.isSucceeded()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
 }

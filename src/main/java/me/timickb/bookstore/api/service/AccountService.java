@@ -65,4 +65,20 @@ public class AccountService {
         return response;
     }
 
+    public PostResponse delete(long id) {
+        PostResponse response = new PostResponse();
+        Optional<Account> existing = accountRepo.findById(id);
+
+        if (existing.isEmpty()) {
+            response.setMessage("Account with id %d doesn't exist".formatted(id));
+            return response;
+        }
+
+        accountRepo.delete(existing.get());
+
+        response.setMessage("Account deleted");
+        response.setSucceeded(true);
+        return response;
+    }
+
 }

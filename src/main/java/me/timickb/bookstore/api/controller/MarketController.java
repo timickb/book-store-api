@@ -58,6 +58,15 @@ public class MarketController {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @DeleteMapping("{bookId}")
+    public ResponseEntity<PostResponse> deleteBook(@PathVariable Long bookId) {
+        PostResponse response = marketService.deleteBook(bookId);
+        if (response.isSucceeded()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @PostMapping("deal")
     public ResponseEntity<PostResponse> makeDeal(@RequestBody DealRequest request) {
         PostResponse response = marketService.makeDeal(request);
