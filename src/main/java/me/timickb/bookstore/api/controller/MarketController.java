@@ -3,10 +3,8 @@ package me.timickb.bookstore.api.controller;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.request.DealRequest;
 import me.timickb.bookstore.api.model.response.PostResponse;
-import me.timickb.bookstore.api.service.InitService;
+import me.timickb.bookstore.api.service.LoggingService;
 import me.timickb.bookstore.api.service.MarketService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +16,12 @@ import java.util.Optional;
 @RequestMapping("/market")
 public class MarketController {
     private final MarketService marketService;
-    private final Logger logger = LoggerFactory.getLogger(InitService.class);
+    private final LoggingService logger;
 
     @Autowired
-    public MarketController(MarketService marketService) {
+    public MarketController(MarketService marketService, LoggingService logger) {
         this.marketService = marketService;
+        this.logger = logger;
     }
 
     @PostMapping

@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 public class AccountService {
     private final AccountRepository accountRepo;
     private final ResponseMapper mapper;
-
+    private final LoggingService logger;
 
     @Autowired
-    public AccountService(AccountRepository accountRepo, ResponseMapper mapper) {
+    public AccountService(AccountRepository accountRepo, ResponseMapper mapper, LoggingService logger) {
         this.accountRepo = accountRepo;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
     public List<AccountResponse> getAll() {
@@ -41,6 +42,7 @@ public class AccountService {
 
     public PostResponse create(Account account) {
         accountRepo.saveAndFlush(account);
+        logger.info("Created account with id %d".formatted(account.getId()));
         PostResponse response = new PostResponse();
         response.setSucceeded(true);
         response.setMessage("Account added!");
@@ -60,6 +62,7 @@ public class AccountService {
         account.setBalance(edited.getBalance());
         accountRepo.saveAndFlush(account);
 
+        logger.info("Updated account with id %d".formatted(account.getId()));
         response.setMessage("Account updated!");
         response.setSucceeded(true);
         return response;
@@ -76,6 +79,7 @@ public class AccountService {
 
         accountRepo.delete(existing.get());
 
+        logger.info("Deleted account with id %d".formatted(id));
         response.setMessage("Account deleted");
         response.setSucceeded(true);
         return response;

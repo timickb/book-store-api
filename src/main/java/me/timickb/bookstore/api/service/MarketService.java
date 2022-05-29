@@ -20,28 +20,17 @@ public class MarketService {
     private final DealRepository dealRepo;
     private final AccountRepository accountRepo;
     private final BookRepository bookRepo;
+    private final LoggingService logger;
+    private final ValidationService validator;
 
     @Autowired
-    public MarketService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo) {
+    public MarketService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo,
+                         LoggingService logger, ValidationService validator) {
         this.dealRepo = dealRepo;
         this.accountRepo = accountRepo;
         this.bookRepo = bookRepo;
-    }
-
-    private String checkBook(Book book) {
-        if (book.getPrice() <= 0) {
-            return "Price should be positive";
-        }
-        if (book.getAmount() < 0) {
-            return "Amount should be non-negative";
-        }
-        if (book.getAuthor().isEmpty()) {
-            return "Author name should be non-empty";
-        }
-        if (book.getName().isEmpty()) {
-            return "Book name should be non-empty";
-        }
-        return "";
+        this.logger = logger;
+        this.validator = validator;
     }
 
     public List<Book> getAllBooks() {
@@ -55,14 +44,16 @@ public class MarketService {
 
     public PostResponse createBook(Book book) {
         PostResponse response = new PostResponse();
-        String checkResult = checkBook(book);
+        String checkResult = validator.validateBook(book);
 
-        if (!checkResult.isEmpty()) {
+        if (!checkResult.equals(ValidationService.SUCCESS_MSG)) {
             response.setMessage(checkResult);
             return response;
         }
 
         bookRepo.saveAndFlush(book);
+
+        logger.info("Created book with id %d".formatted(book.getId()));
         response.setSucceeded(true);
         response.setMessage("Book added!");
         return response;
@@ -77,8 +68,8 @@ public class MarketService {
             return response;
         }
 
-        String checkResult = checkBook(edited);
-        if (!checkResult.isEmpty()) {
+        String checkResult = validator.validateBook(edited);
+        if (!checkResult.equals(ValidationService.SUCCESS_MSG)) {
             response.setMessage(checkResult);
             return response;
         }
@@ -89,6 +80,8 @@ public class MarketService {
         book.setName(edited.getName());
         book.setAmount(edited.getAmount());
         bookRepo.saveAndFlush(book);
+
+        logger.info("Updated book with id %d".formatted(id));
 
         response.setMessage("Book updated!");
         response.setSucceeded(true);
@@ -105,6 +98,8 @@ public class MarketService {
         }
 
         bookRepo.delete(existing.get());
+
+        logger.info("Deleted book with id %d".formatted(id));
 
         response.setMessage("Book deleted");
         response.setSucceeded(true);
@@ -142,7 +137,7 @@ public class MarketService {
         List<Deal> existingDeals = dealRepo.findAll().stream()
                 .filter(d -> d.getBook().getId() == request.getBookId() &&
                         d.getAccount().getId() == request.getAccountId())
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
         // Проводим транзакцию
         wantedBook.setAmount(wantedBook.getAmount() - request.getAmount());
@@ -163,6 +158,9 @@ public class MarketService {
             deal.setAmount(deal.getAmount() + request.getAmount());
         }
         dealRepo.saveAndFlush(deal);
+
+        logger.info("Account with id %d bought a book with id %d"
+                .formatted(request.getAccountId(), request.getBookId()));
 
         response.setMessage("Deal succeeded!");
         response.setSucceeded(true);
