@@ -6,10 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class LoggingService {
@@ -32,9 +37,14 @@ public class LoggingService {
         String data = "[%s] [%s] %s".formatted(level, dateTime, message);
 
         try {
+            List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+
             FileWriter fileWriter = new FileWriter(filename);
             PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.print(data);
+            for (String line : lines) {
+                printWriter.println(line);
+            }
+            printWriter.println(data);
             printWriter.close();
         } catch (IOException ignored) {
         }
