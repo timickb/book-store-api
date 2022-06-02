@@ -24,12 +24,27 @@ public class DealService {
     private final LoggingService logger;
 
     @Autowired
-    public DealService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo,
-                       LoggingService logger) {
+    public DealService(DealRepository dealRepo, AccountRepository accountRepo, BookRepository bookRepo, LoggingService logger) {
         this.dealRepo = dealRepo;
         this.accountRepo = accountRepo;
         this.bookRepo = bookRepo;
         this.logger = logger;
+    }
+
+    public PostResponse deleteDeal(long id) {
+        PostResponse response = new PostResponse();
+        Optional<Deal> existing = dealRepo.findById(id);
+
+        if (existing.isEmpty()) {
+            response.setMessage("Deal with id %d doesn't exist".formatted(id));
+            return response;
+        }
+
+        dealRepo.delete(existing.get());
+
+        response.setSucceeded(true);
+        response.setMessage("Deal removed");
+        return response;
     }
 
     public List<Deal> getAllDeals() {
@@ -41,15 +56,11 @@ public class DealService {
     }
 
     public List<Deal> getAllForAccount(long accountId) {
-        return dealRepo.findAll().stream()
-                .filter(d -> d.getAccount().getId() == accountId)
-                .collect(Collectors.toList());
+        return dealRepo.findAll().stream().filter(d -> d.getAccount().getId() == accountId).collect(Collectors.toList());
     }
 
     public List<Deal> getAllForBook(long bookId) {
-        return dealRepo.findAll().stream()
-                .filter(d -> d.getBook().getId() == bookId)
-                .collect(Collectors.toList());
+        return dealRepo.findAll().stream().filter(d -> d.getBook().getId() == bookId).collect(Collectors.toList());
     }
 
     public PostResponse makeDeal(DealRequest request) {
@@ -81,9 +92,8 @@ public class DealService {
         }
 
         List<Deal> existingDeals = dealRepo.findAll().stream()
-                .filter(d -> d.getBook().getId() == request.getBookId() &&
-                        d.getAccount().getId() == request.getAccountId())
-                .collect(Collectors.toList());
+                .filter(d -> d.getBook().getId() == request.getBookId() && d.getAccount().getId() == request.getAccountId())
+                .toList();
 
         // Проводим транзакцию
         wantedBook.setAmount(wantedBook.getAmount() - request.getAmount());
@@ -105,8 +115,10 @@ public class DealService {
         }
         dealRepo.saveAndFlush(deal);
 
-        logger.info("Account with id %d bought a book with id %d"
-                .formatted(request.getAccountId(), request.getBookId()));
+        logger.info("Account with id %d bought a book with id %d (%d items)".formatted(
+                request.getAccountId(),
+                request.getBookId(),
+                request.getAmount()));
 
         response.setMessage("Deal succeeded!");
         response.setSucceeded(true);

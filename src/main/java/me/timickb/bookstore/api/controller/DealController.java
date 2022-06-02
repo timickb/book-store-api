@@ -1,12 +1,9 @@
 package me.timickb.bookstore.api.controller;
 
-import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.request.DealRequest;
 import me.timickb.bookstore.api.model.response.PostResponse;
-import me.timickb.bookstore.api.service.BookService;
 import me.timickb.bookstore.api.service.DealService;
-import me.timickb.bookstore.api.service.LoggingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +15,10 @@ import java.util.Optional;
 @RequestMapping("/deals")
 public class DealController {
     private final DealService dealService;
-    private final LoggingService logger;
 
     @Autowired
-    public DealController(DealService dealService, LoggingService logger) {
+    public DealController(DealService dealService) {
         this.dealService = dealService;
-        this.logger = logger;
     }
 
     @GetMapping
@@ -54,8 +49,15 @@ public class DealController {
     public ResponseEntity<PostResponse> makeDeal(@RequestBody DealRequest request) {
         PostResponse response = dealService.makeDeal(request);
         if (response.isSucceeded()) {
-            logger.info("Account %d bought the book %d (%d items)"
-                    .formatted(request.getAccountId(), request.getBookId(), request.getAmount()));
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @DeleteMapping("{dealId}")
+    public ResponseEntity<PostResponse> deleteDeal(@PathVariable Long dealId) {
+        PostResponse response = dealService.deleteDeal(dealId);
+        if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.badRequest().body(response);
