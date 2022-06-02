@@ -1,10 +1,8 @@
 package me.timickb.bookstore.api.controller;
 
 import me.timickb.bookstore.api.model.base.Book;
-import me.timickb.bookstore.api.model.request.DealRequest;
 import me.timickb.bookstore.api.model.response.PostResponse;
-import me.timickb.bookstore.api.service.LoggingService;
-import me.timickb.bookstore.api.service.MarketService;
+import me.timickb.bookstore.api.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,20 +11,18 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/market")
-public class MarketController {
-    private final MarketService marketService;
-    private final LoggingService logger;
+@RequestMapping("/books")
+public class BookController {
+    private final BookService bookService;
 
     @Autowired
-    public MarketController(MarketService marketService, LoggingService logger) {
-        this.marketService = marketService;
-        this.logger = logger;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @PostMapping
     public ResponseEntity<PostResponse> createBook(@RequestBody Book book) {
-        PostResponse response = marketService.createBook(book);
+        PostResponse response = bookService.createBook(book);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -34,13 +30,13 @@ public class MarketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getMarket() {
-        return ResponseEntity.ok(marketService.getAllBooks());
+    public ResponseEntity<List<Book>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @GetMapping("{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable Long bookId) {
-        Optional<Book> book = marketService.getBookById(bookId);
+        Optional<Book> book = bookService.getBookById(bookId);
         if (book.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -50,7 +46,7 @@ public class MarketController {
     @PutMapping("{bookId}")
     public ResponseEntity<PostResponse> updateBook(@RequestBody Book edited,
                                                    @PathVariable Long bookId) {
-        PostResponse response = marketService.editBook(edited, bookId);
+        PostResponse response = bookService.editBook(edited, bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -59,19 +55,8 @@ public class MarketController {
 
     @DeleteMapping("{bookId}")
     public ResponseEntity<PostResponse> deleteBook(@PathVariable Long bookId) {
-        PostResponse response = marketService.deleteBook(bookId);
+        PostResponse response = bookService.deleteBook(bookId);
         if (response.isSucceeded()) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @PostMapping("deal")
-    public ResponseEntity<PostResponse> makeDeal(@RequestBody DealRequest request) {
-        PostResponse response = marketService.makeDeal(request);
-        if (response.isSucceeded()) {
-            logger.info("Account %d bought the book %d (%d items)"
-                    .formatted(request.getAccountId(), request.getBookId(), request.getAmount()));
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.badRequest().body(response);
