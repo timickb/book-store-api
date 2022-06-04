@@ -1,6 +1,5 @@
 package me.timickb.bookstore.api.service;
 
-import me.timickb.bookstore.api.Application;
 import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
@@ -13,11 +12,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.junit.jupiter.api.Assertions;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
