@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
-    public static final int CATEGORY_NAME_LIMIT = 100;
     private final CategoryRepository categoryRepo;
     private final ValidationService validationService;
 
