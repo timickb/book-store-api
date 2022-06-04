@@ -17,9 +17,8 @@ import org.springframework.context.annotation.ComponentScan;
 })
 public class Application {
     public static void main(String[] args) {
-        try (ConfigurableApplicationContext context = SpringApplication.run(Application.class, args)) {
-            // Load data from file.
-            context.getBean(InitService.class).initDatabaseFromFile();
-        }
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+        // Load data from file.
+        context.getBean(InitService.class).initDatabaseFromFile();
     }
 }

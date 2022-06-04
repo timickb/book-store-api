@@ -1,6 +1,8 @@
 package me.timickb.bookstore.api.controller;
 
 import me.timickb.bookstore.api.model.base.Book;
+import me.timickb.bookstore.api.model.request.BookAddRequest;
+import me.timickb.bookstore.api.model.request.BookFilter;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createBook(@RequestBody Book book) {
+    public ResponseEntity<PostResponse> createBook(@RequestBody BookAddRequest book) {
         PostResponse response = bookService.createBook(book);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -41,6 +43,11 @@ public class BookController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(book.get());
+    }
+
+    @PostMapping("filter")
+    public ResponseEntity<List<Book>> getBooksByFilter(@RequestBody BookFilter filter) {
+        return ResponseEntity.ok(bookService.getBooksByFilter(filter));
     }
 
     @PutMapping("{bookId}")

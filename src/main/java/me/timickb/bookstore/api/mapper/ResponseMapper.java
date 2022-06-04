@@ -4,7 +4,7 @@ import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.response.AccountResponse;
-import me.timickb.bookstore.api.model.response.BookResponse;
+import me.timickb.bookstore.api.model.response.BookInAccountResponse;
 import me.timickb.bookstore.api.model.response.PurchaseResponse;
 import me.timickb.bookstore.api.repository.DealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class ResponseMapper {
      */
     public PurchaseResponse bookAndAmountToPurchase(Book book, int amount) {
         PurchaseResponse response = new PurchaseResponse();
-        BookResponse book1 = new BookResponse();
+        BookInAccountResponse book1 = new BookInAccountResponse();
 
         book1.setAuthor(book.getAuthor());
         book1.setName(book.getName());

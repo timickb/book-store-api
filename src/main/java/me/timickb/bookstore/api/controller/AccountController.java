@@ -24,7 +24,7 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<List<AccountResponse>> getAllAccounts() {
         try {
-            return ResponseEntity.ok(accountService.getAll());
+            return ResponseEntity.ok(accountService.getAllAccounts());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -41,7 +41,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<PostResponse> createAccount(@RequestBody Account account) {
-        PostResponse response = accountService.create(account);
+        PostResponse response = accountService.createAccount(account);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -51,7 +51,7 @@ public class AccountController {
     @PutMapping("{accountId}")
     public ResponseEntity<PostResponse> updateAccount(@RequestBody Account edited,
                                                       @PathVariable Long accountId) {
-        PostResponse response = accountService.edit(edited, accountId);
+        PostResponse response = accountService.updateAccount(edited, accountId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -60,7 +60,7 @@ public class AccountController {
 
     @DeleteMapping("{accountId}")
     public ResponseEntity<PostResponse> deleteAccount(@PathVariable Long accountId) {
-        PostResponse response = accountService.delete(accountId);
+        PostResponse response = accountService.deleteAccount(accountId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }

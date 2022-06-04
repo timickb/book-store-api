@@ -25,7 +25,7 @@ public class AccountService {
         this.logger = logger;
     }
 
-    public List<AccountResponse> getAll() {
+    public List<AccountResponse> getAllAccounts() {
         //noinspection OptionalGetWithoutIsPresent
         return accountRepo.findAll().stream()
                 .map(a -> getById(a.getId()).get())
@@ -40,7 +40,7 @@ public class AccountService {
         return Optional.of(mapper.responseFromAccount(accountOptional.get()));
     }
 
-    public PostResponse create(Account account) {
+    public PostResponse createAccount(Account account) {
         accountRepo.saveAndFlush(account);
         logger.info("Created account with id %d".formatted(account.getId()));
         PostResponse response = new PostResponse();
@@ -49,7 +49,7 @@ public class AccountService {
         return response;
     }
 
-    public PostResponse edit(Account edited, long id) {
+    public PostResponse updateAccount(Account edited, long id) {
         PostResponse response = new PostResponse();
         Optional<Account> existing = accountRepo.findById(id);
 
@@ -68,7 +68,7 @@ public class AccountService {
         return response;
     }
 
-    public PostResponse delete(long id) {
+    public PostResponse deleteAccount(long id) {
         PostResponse response = new PostResponse();
         Optional<Account> existing = accountRepo.findById(id);
 
