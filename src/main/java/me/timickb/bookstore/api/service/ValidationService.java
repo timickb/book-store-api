@@ -40,7 +40,7 @@ public class ValidationService {
 
     public String validateBookFilter(BookFilter filter) {
         String sorting = filter.getSortPrice();
-        if (sorting.equals("ASC") || sorting.equals("DESC")) {
+        if (sorting == null || sorting.equals("ASC") || sorting.equals("DESC")) {
             return SUCCESS_MSG;
         }
         return BOOK_FILTER_SORTING_FAILED_MSG;

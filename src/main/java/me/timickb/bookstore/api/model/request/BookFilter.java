@@ -6,4 +6,5 @@ import lombok.Data;
 public class BookFilter {
     private String search;
     private String sortPrice;
+    private Long categoryId;
 }

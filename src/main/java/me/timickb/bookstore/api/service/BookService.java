@@ -45,13 +45,23 @@ public class BookService {
             return new ArrayList<>();
         }
 
-        List<Book> result = bookRepo.findAll().stream()
-                .filter(b -> b.getName().contains(filter.getSearch()))
-                .collect(Collectors.toList());
+        List<Book> result = bookRepo.findAll();
 
-        switch (filter.getSortPrice()) {
-            case "ASC" -> result.sort(Comparator.comparing(Book::getPrice));
-            case "DESC" -> result.sort(Comparator.comparing(Book::getPrice).reversed());
+        if (filter.getSearch() != null) {
+            result = result.stream().filter(b -> b.getName().contains(filter.getSearch()))
+                    .collect(Collectors.toList());
+        }
+
+        if (filter.getCategoryId() != null) {
+            result = result.stream().filter(b -> b.getCategory().getId() == filter.getCategoryId())
+                    .collect(Collectors.toList());
+        }
+
+        if (filter.getSortPrice() != null) {
+            switch (filter.getSortPrice()) {
+                case "ASC" -> result.sort(Comparator.comparing(Book::getPrice));
+                case "DESC" -> result.sort(Comparator.comparing(Book::getPrice).reversed());
+            }
         }
 
         return result;
