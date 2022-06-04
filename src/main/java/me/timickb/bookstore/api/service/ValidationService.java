@@ -2,13 +2,12 @@ package me.timickb.bookstore.api.service;
 
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.BookCategory;
+import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.request.BookAddRequest;
 import me.timickb.bookstore.api.model.request.BookFilter;
-import me.timickb.bookstore.api.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
@@ -28,12 +27,34 @@ public class ValidationService {
 
     public static final String CATEGORY_NAME_FAILED_MSG = "Name length limit is 100 chars";
 
+    public static final String ACCOUNT_SHORT_PASSWORD = "Password should be at least 8 characters long";
+    public static final String ACCOUNT_INVALID_EMAIL = "Email format is invalid";
+
     public static final int CATEGORY_NAME_LIMIT = 100;
+    public static final int MIN_PASSWORD_LENGTH = 8;
+
+    private boolean validateEmail(String email) {
+        String regexPattern = "^(.+)@(\\S+)$";
+        return Pattern.compile(regexPattern)
+                .matcher(email)
+                .matches();
+    }
 
 
     public String validateCategory(BookCategory category) {
         if (category.getName().length() > CATEGORY_NAME_LIMIT) {
             return CATEGORY_NAME_FAILED_MSG;
+        }
+        return SUCCESS_MSG;
+    }
+
+    public String validateAccountAddRequest(AccountAddRequest account) {
+        if (account.getPassword().length() < MIN_PASSWORD_LENGTH) {
+            return ACCOUNT_SHORT_PASSWORD;
+        }
+
+        if (!validateEmail(account.getEmail())) {
+            return ACCOUNT_INVALID_EMAIL;
         }
         return SUCCESS_MSG;
     }

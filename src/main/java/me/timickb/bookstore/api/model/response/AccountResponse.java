@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class AccountResponse implements Serializable {
+    private String email;
     private int balance;
     private List<PurchaseResponse> books;
 }

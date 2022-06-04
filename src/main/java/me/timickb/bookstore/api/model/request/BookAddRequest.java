@@ -9,4 +9,5 @@ public class BookAddRequest {
     private int price;
     private int amount;
     private long categoryId;
+    private String coverUrl;
 }

@@ -34,7 +34,7 @@ public class ResponseMapper {
     public AccountResponse responseFromAccount(Account account) {
         List<Deal> deals = dealRepo.findAll().stream()
                 .filter(d -> d.getAccount().getId() == account.getId())
-                .findFirst().stream().collect(Collectors.toList());
+                .findFirst().stream().toList();
 
         List<PurchaseResponse> accountBooks = new ArrayList<>();
 
@@ -45,6 +45,7 @@ public class ResponseMapper {
         AccountResponse response = new AccountResponse();
         response.setBooks(accountBooks);
         response.setBalance(account.getBalance());
+        response.setEmail(account.getEmail());
 
         return response;
     }

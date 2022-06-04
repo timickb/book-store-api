@@ -1,6 +1,7 @@
 package me.timickb.bookstore.api.controller;
 
 import me.timickb.bookstore.api.model.base.Account;
+import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.service.AccountService;
@@ -40,7 +41,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createAccount(@RequestBody Account account) {
+    public ResponseEntity<PostResponse> createAccount(@RequestBody AccountAddRequest account) {
         PostResponse response = accountService.createAccount(account);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -49,7 +50,7 @@ public class AccountController {
     }
 
     @PutMapping("{accountId}")
-    public ResponseEntity<PostResponse> updateAccount(@RequestBody Account edited,
+    public ResponseEntity<PostResponse> updateAccount(@RequestBody AccountAddRequest edited,
                                                       @PathVariable Long accountId) {
         PostResponse response = accountService.updateAccount(edited, accountId);
         if (response.isSucceeded()) {

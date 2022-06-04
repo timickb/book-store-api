@@ -130,6 +130,7 @@ public class BookService {
         book.setAuthor(editedBase.getAuthor());
         book.setName(editedBase.getName());
         book.setAmount(editedBase.getAmount());
+        book.setCoverUrl(editedBase.getCoverUrl());
         book.setCategory(category.get());
         bookRepo.saveAndFlush(book);
 

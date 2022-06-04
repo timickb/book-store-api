@@ -11,5 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 public class Account extends EntityBase {
+    private String email;
+    private String passwordHash;
     private int balance;
 }

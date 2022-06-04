@@ -16,6 +16,8 @@ import org.springframework.context.annotation.ComponentScan;
         "me.timickb.bookstore.api.service"
 })
 public class Application {
+
+    public static final int BCRYPT_STRENGTH = 10;
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
         // Load data from file.
