@@ -51,8 +51,8 @@ public class BookController {
     }
 
     @PutMapping("{bookId}")
-    public ResponseEntity<PostResponse> updateBook(@RequestBody Book edited, @PathVariable Long bookId) {
-        PostResponse response = bookService.editBook(edited, bookId);
+    public ResponseEntity<PostResponse> updateBook(@RequestBody BookAddRequest edited, @PathVariable Long bookId) {
+        PostResponse response = bookService.updateBook(edited, bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }

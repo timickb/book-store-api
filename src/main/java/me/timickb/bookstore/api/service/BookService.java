@@ -99,7 +99,7 @@ public class BookService {
         return response;
     }
 
-    public PostResponse editBook(Book edited, long id) {
+    public PostResponse updateBook(BookAddRequest edited, long id) {
         PostResponse response = new PostResponse();
         Optional<Book> existing = bookRepo.findById(id);
 
@@ -108,17 +108,29 @@ public class BookService {
             return response;
         }
 
-        String checkResult = validator.validateBook(edited);
+        Optional<BookCategory> category = categoryRepo.findById(edited.getCategoryId());
+
+        if (category.isEmpty()) {
+            response.setMessage("Category with id %d doesn't exist.".formatted(edited.getCategoryId()));
+            return response;
+        }
+
+        Book editedBase = new Book();
+        editedBase.setCategory(category.get());
+        copyProperties(edited, editedBase);
+
+        String checkResult = validator.validateBook(editedBase);
         if (!checkResult.equals(ValidationService.SUCCESS_MSG)) {
             response.setMessage(checkResult);
             return response;
         }
 
         Book book = existing.get();
-        book.setPrice(edited.getPrice());
-        book.setAuthor(edited.getAuthor());
-        book.setName(edited.getName());
-        book.setAmount(edited.getAmount());
+        book.setPrice(editedBase.getPrice());
+        book.setAuthor(editedBase.getAuthor());
+        book.setName(editedBase.getName());
+        book.setAmount(editedBase.getAmount());
+        book.setCategory(category.get());
         bookRepo.saveAndFlush(book);
 
         logger.info("Updated book with id %d".formatted(id));

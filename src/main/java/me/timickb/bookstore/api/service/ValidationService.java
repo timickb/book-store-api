@@ -46,6 +46,12 @@ public class ValidationService {
         return BOOK_FILTER_SORTING_FAILED_MSG;
     }
 
+    public String validateBookAddRequest(BookAddRequest request) {
+        Book book = new Book();
+        copyProperties(request, book);
+        return validateBook(book);
+    }
+
     public String validateBook(Book book) {
         if (book.getPrice() <= 0) {
             return BOOK_PRICE_FAILED_MSG;
