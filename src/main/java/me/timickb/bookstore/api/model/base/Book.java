@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,4 +17,9 @@ public class Book extends EntityBase {
     private String name;
     private int price;
     private int amount;
+    private String coverUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private BookCategory category;
 }

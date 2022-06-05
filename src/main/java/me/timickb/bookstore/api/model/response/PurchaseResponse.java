@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PurchaseResponse {
-    private BookResponse book;
+    private BookInAccountResponse book;
     private int amount;
 }

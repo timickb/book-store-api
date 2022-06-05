@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class BookResponse implements Serializable {
+public class BookInAccountResponse implements Serializable {
     private String author;
     private String name;
 }

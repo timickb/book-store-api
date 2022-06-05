@@ -7,11 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "accounts")
-@Entity
+@Table(name = "categories")
 @Data
-public class Account extends EntityBase {
-    private String email;
-    private String passwordHash;
-    private int balance;
+@Entity
+public class BookCategory extends EntityBase {
+    private String name;
 }

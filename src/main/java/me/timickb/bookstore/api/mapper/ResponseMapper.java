@@ -4,7 +4,7 @@ import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.response.AccountResponse;
-import me.timickb.bookstore.api.model.response.BookResponse;
+import me.timickb.bookstore.api.model.response.BookInAccountResponse;
 import me.timickb.bookstore.api.model.response.PurchaseResponse;
 import me.timickb.bookstore.api.repository.DealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ResponseMapper {
     public AccountResponse responseFromAccount(Account account) {
         List<Deal> deals = dealRepo.findAll().stream()
                 .filter(d -> d.getAccount().getId() == account.getId())
-                .findFirst().stream().collect(Collectors.toList());
+                .findFirst().stream().toList();
 
         List<PurchaseResponse> accountBooks = new ArrayList<>();
 
@@ -45,6 +45,7 @@ public class ResponseMapper {
         AccountResponse response = new AccountResponse();
         response.setBooks(accountBooks);
         response.setBalance(account.getBalance());
+        response.setEmail(account.getEmail());
 
         return response;
     }
@@ -58,7 +59,7 @@ public class ResponseMapper {
      */
     public PurchaseResponse bookAndAmountToPurchase(Book book, int amount) {
         PurchaseResponse response = new PurchaseResponse();
-        BookResponse book1 = new BookResponse();
+        BookInAccountResponse book1 = new BookInAccountResponse();
 
         book1.setAuthor(book.getAuthor());
         book1.setName(book.getName());
