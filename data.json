@@ -1,13 +1,19 @@
 {
     "accounts": [
         {
-            "balance": 100
+            "email": "user1@thebookstore.my",
+            "passwordHash": "12345678",
+            "balance": 1000
         },
         {
-            "balance": 120
+            "email": "user1@thebookstore.my",
+            "passwordHash": "12345678",
+            "balance": 1200
         },
         {
-            "balance": 150
+            "email": "user1@thebookstore.my",
+            "passwordHash": "12345678",
+            "balance": 1500
         }
     ],
     "books": [
@@ -15,18 +21,21 @@
             "author": "Стив Макконелл",
             "name": "Совершенный код",
             "price": 1000,
+            "coverUrl": "https://thebookstore.my/public/images/book-covers/default.jpg",
             "amount": 7
         },
         {
             "author": "Брюс Эккель",
             "name": "Философия Java",
             "price": 1500,
+            "coverUrl": "https://thebookstore.my/public/images/book-covers/default.jpg",
             "amount": 15
         },
         {
             "author": "Joshua Bloch",
             "name": "Effective Java",
             "price": 2500,
+            "coverUrl": "https://thebookstore.my/public/images/book-covers/default.jpg",
             "amount": 10
         }
     ]
