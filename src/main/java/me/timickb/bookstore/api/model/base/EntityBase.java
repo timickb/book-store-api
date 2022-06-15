@@ -13,15 +13,12 @@ import java.util.Date;
 public class EntityBase implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
-    @Column(name = "created")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
-    @Column(name = "updated")
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
