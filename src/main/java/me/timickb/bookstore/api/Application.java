@@ -1,9 +1,7 @@
 package me.timickb.bookstore.api;
 
-import me.timickb.bookstore.api.service.InitService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
@@ -19,8 +17,6 @@ public class Application {
 
     public static final int BCRYPT_STRENGTH = 10;
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
-        // Load data from file.
-        context.getBean(InitService.class).initDatabaseFromFile();
+        SpringApplication.run(Application.class, args);
     }
 }
