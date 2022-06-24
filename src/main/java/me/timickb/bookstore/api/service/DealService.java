@@ -10,6 +10,8 @@ import me.timickb.bookstore.api.repository.AccountRepository;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.DealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,8 +49,9 @@ public class DealService {
         return response;
     }
 
-    public List<Deal> getAllDeals() {
-        return dealRepo.findAll();
+    public List<Deal> getDealsLimited(int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        return dealRepo.findAll(pageable).toList();
     }
 
     public Optional<Deal> getDealById(long id) {
@@ -113,7 +116,7 @@ public class DealService {
             deal = existingDeals.get(0);
             deal.setAmount(deal.getAmount() + request.getAmount());
         }
-        dealRepo.saveAndFlush(deal);
+        dealRepo.save(deal);
 
         logger.info("Account with id %d bought a book with id %d (%d items)".formatted(
                 request.getAccountId(),
