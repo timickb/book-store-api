@@ -5,7 +5,9 @@ import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.request.DealRequest;
+import me.timickb.bookstore.api.model.response.BookInAccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;
+import me.timickb.bookstore.api.model.response.PurchaseResponse;
 import me.timickb.bookstore.api.repository.AccountRepository;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.DealRepository;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,6 +63,30 @@ public class DealService {
 
     public List<Deal> getAllForAccount(long accountId) {
         return dealRepo.findAll().stream().filter(d -> d.getAccount().getId() == accountId).collect(Collectors.toList());
+    }
+
+    public List<PurchaseResponse> getPurchasesForAccount(long accountId) {
+        Optional<Account> account = accountRepo.findById(accountId);
+
+        if (account.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Deal> deals = dealRepo.findAllByAccount(account.get());
+
+        List<PurchaseResponse> result = new ArrayList<>();
+
+        for (Deal deal : deals) {
+            BookInAccountResponse book = new BookInAccountResponse();
+            PurchaseResponse item = new PurchaseResponse();
+            book.setAuthor(deal.getBook().getAuthor());
+            book.setName(deal.getBook().getName());
+            item.setBook(book);
+            item.setAmount(deal.getAmount());
+            result.add(item);
+        }
+
+        return result;
     }
 
     public List<Deal> getAllForBook(long bookId) {

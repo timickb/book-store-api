@@ -5,6 +5,7 @@ import me.timickb.bookstore.api.model.base.BookCategory;
 import me.timickb.bookstore.api.model.request.BookAddRequest;
 import me.timickb.bookstore.api.model.request.BookFilter;
 import me.timickb.bookstore.api.model.response.PostResponse;
+import me.timickb.bookstore.api.model.response.PurchaseResponse;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

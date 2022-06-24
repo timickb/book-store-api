@@ -1,12 +1,13 @@
 package me.timickb.bookstore.api.service;
 
 import me.timickb.bookstore.api.Application;
-import me.timickb.bookstore.api.mapper.ResponseMapper;
+import me.timickb.bookstore.api.mapper.AccountMapper;
 import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.repository.AccountRepository;
+import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ import java.util.stream.Collectors;
 public class AccountService {
     private final AccountRepository accountRepo;
     private final ValidationService validationService;
-    private final ResponseMapper mapper;
+    private final AccountMapper mapper;
     private final LoggingService logger;
 
     @Autowired
     public AccountService(AccountRepository accountRepo, ValidationService validationService,
-                          ResponseMapper mapper, LoggingService logger) {
+                          AccountMapper mapper, LoggingService logger) {
         this.accountRepo = accountRepo;
         this.validationService = validationService;
         this.mapper = mapper;
@@ -34,7 +35,7 @@ public class AccountService {
 
     public List<AccountResponse> getAllAccounts() {
         return accountRepo.findAll().stream()
-                .map(mapper::responseFromAccount).collect(Collectors.toList());
+                .map(mapper::accountToResponse).collect(Collectors.toList());
     }
 
     public Optional<AccountResponse> getById(long id) {
@@ -42,7 +43,7 @@ public class AccountService {
         if (accountOptional.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(mapper.responseFromAccount(accountOptional.get()));
+        return Optional.of(mapper.accountToResponse(accountOptional.get()));
     }
 
     public PostResponse createAccount(AccountAddRequest request) {
