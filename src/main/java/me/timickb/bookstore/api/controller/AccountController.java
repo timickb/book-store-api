@@ -1,5 +1,6 @@
 package me.timickb.bookstore.api.controller;
 
+import me.timickb.bookstore.api.Application;
 import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;
@@ -22,12 +23,11 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
-        try {
-            return ResponseEntity.ok(accountService.getAllAccounts());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<List<AccountResponse>> getAccounts(@RequestParam("page") Optional<Integer> page,
+                                                             @RequestParam("limit") Optional<Integer> limit) {
+        if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
+        if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
+        return ResponseEntity.ok(accountService.getAccountsPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{accountId}")

@@ -1,5 +1,6 @@
 package me.timickb.bookstore.api.controller;
 
+import me.timickb.bookstore.api.Application;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.request.BookAddRequest;
 import me.timickb.bookstore.api.model.request.BookFilter;
@@ -32,8 +33,11 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+    public ResponseEntity<List<Book>> getBooks(@RequestParam("page") Optional<Integer> page,
+                                               @RequestParam("limit") Optional<Integer> limit) {
+        if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
+        if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
+        return ResponseEntity.ok(bookService.getBooksPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{bookId}")

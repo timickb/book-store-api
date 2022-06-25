@@ -36,13 +36,12 @@ public class BookService {
     }
 
     public List<Book> getAllBooks() {
-        return bookRepo.findAll().stream()
-                .filter(b -> b.getAmount() > 0).collect(Collectors.toList());
+        return bookRepo.findByAmountGreaterThan(0);
     }
 
     public List<Book> getBooksPageable(int page, int limit) {
-        return bookRepo.findAll(PageRequest.of(page, limit)).stream()
-                .filter(b -> b.getAmount() > 0).collect(Collectors.toList());
+        return bookRepo.findByAmountGreaterThan(0, PageRequest.of(page, limit))
+                .toList();
     }
 
     public List<Book> getBooksByFilter(BookFilter filter) {

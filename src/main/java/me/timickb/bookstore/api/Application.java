@@ -15,6 +15,8 @@ import org.springframework.context.annotation.ComponentScan;
 })
 public class Application {
 
+    public static final int DEFAULT_PAGE = 0;
+    public static final int DEFAULT_PAGE_LIMIT = 100;
     public static final int BCRYPT_STRENGTH = 10;
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

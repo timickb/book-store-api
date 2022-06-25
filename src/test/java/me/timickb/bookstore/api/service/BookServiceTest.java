@@ -25,7 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 class BookServiceTest {
     @Autowired
@@ -40,7 +39,7 @@ class BookServiceTest {
     void getAllBooks() {
         List<Book> books = service.getAllBooks();
         Assertions.assertNotNull(books);
-        Mockito.verify(bookRepo, Mockito.times(1)).findAll();
+        Mockito.verify(bookRepo, Mockito.times(1)).findByAmountGreaterThan(0);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package me.timickb.bookstore.api.controller;
 
+import me.timickb.bookstore.api.Application;
 import me.timickb.bookstore.api.model.base.Deal;
 import me.timickb.bookstore.api.model.request.DealRequest;
 import me.timickb.bookstore.api.model.response.PostResponse;
@@ -14,8 +15,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/deals")
 public class DealController {
-    public static final int DEFAULT_PAGE = 0;
-    public static final int DEFAULT_PAGE_LIMIT = 100;
 
     private final DealService dealService;
 
@@ -27,8 +26,8 @@ public class DealController {
     @GetMapping
     public ResponseEntity<List<Deal>> getDeals(@RequestParam("page") Optional<Integer> page,
                                                @RequestParam("limit") Optional<Integer> limit) {
-        if (page.isEmpty()) page = Optional.of(DEFAULT_PAGE);
-        if (limit.isEmpty()) limit = Optional.of(DEFAULT_PAGE_LIMIT);
+        if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
+        if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
         return ResponseEntity.ok(dealService.getDealsPageable(page.get(), limit.get()));
     }
 
