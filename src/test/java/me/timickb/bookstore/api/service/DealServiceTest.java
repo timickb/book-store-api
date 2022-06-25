@@ -45,7 +45,7 @@ public class DealServiceTest {
 
     @Test
     public void getAllDeals() {
-        List<Deal> deals = dealService.getDealsLimited(0, 100);
+        List<Deal> deals = dealService.getDealsPageable(0, 100);
         Assertions.assertNotNull(deals);
         Mockito.verify(dealRepo, Mockito.times(1)).findAll();
     }

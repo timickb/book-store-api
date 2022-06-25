@@ -29,7 +29,7 @@ public class DealController {
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(DEFAULT_PAGE_LIMIT);
-        return ResponseEntity.ok(dealService.getDealsLimited(page.get(), limit.get()));
+        return ResponseEntity.ok(dealService.getDealsPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{dealId}")

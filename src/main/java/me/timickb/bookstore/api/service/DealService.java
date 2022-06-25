@@ -53,7 +53,7 @@ public class DealService {
         return response;
     }
 
-    public List<Deal> getDealsLimited(int page, int limit) {
+    public List<Deal> getDealsPageable(int page, int limit) {
         Pageable pageable = PageRequest.of(page, limit);
         return dealRepo.findAll(pageable).toList();
     }

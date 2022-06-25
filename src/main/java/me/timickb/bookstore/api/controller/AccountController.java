@@ -1,6 +1,5 @@
 package me.timickb.bookstore.api.controller;
 
-import me.timickb.bookstore.api.model.base.Account;
 import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;

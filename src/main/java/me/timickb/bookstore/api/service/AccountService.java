@@ -7,8 +7,8 @@ import me.timickb.bookstore.api.model.request.AccountAddRequest;
 import me.timickb.bookstore.api.model.response.AccountResponse;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.repository.AccountRepository;
-import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,8 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Service
 public class AccountService {
@@ -35,6 +37,11 @@ public class AccountService {
 
     public List<AccountResponse> getAllAccounts() {
         return accountRepo.findAll().stream()
+                .map(mapper::accountToResponse).collect(Collectors.toList());
+    }
+
+    public List<AccountResponse> getAccountsPageable(int page, int limit) {
+        return accountRepo.findAll(PageRequest.of(page, limit)).stream()
                 .map(mapper::accountToResponse).collect(Collectors.toList());
     }
 
@@ -65,8 +72,7 @@ public class AccountService {
                 new BCryptPasswordEncoder(Application.BCRYPT_STRENGTH, new SecureRandom());
 
         Account account = new Account();
-        account.setEmail(request.getEmail());
-        account.setBalance(request.getBalance());
+        copyProperties(request, account);
         account.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         accountRepo.saveAndFlush(account);
@@ -96,8 +102,7 @@ public class AccountService {
                 new BCryptPasswordEncoder(Application.BCRYPT_STRENGTH, new SecureRandom());
 
         Account account = existing.get();
-        account.setEmail(edited.getEmail());
-        account.setBalance(edited.getBalance());
+        copyProperties(edited, account);
         account.setPasswordHash(passwordEncoder.encode(edited.getPassword()));
 
         accountRepo.saveAndFlush(account);

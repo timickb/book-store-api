@@ -9,6 +9,7 @@ import me.timickb.bookstore.api.model.response.PurchaseResponse;
 import me.timickb.bookstore.api.repository.BookRepository;
 import me.timickb.bookstore.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,6 +37,11 @@ public class BookService {
 
     public List<Book> getAllBooks() {
         return bookRepo.findAll().stream()
+                .filter(b -> b.getAmount() > 0).collect(Collectors.toList());
+    }
+
+    public List<Book> getBooksPageable(int page, int limit) {
+        return bookRepo.findAll(PageRequest.of(page, limit)).stream()
                 .filter(b -> b.getAmount() > 0).collect(Collectors.toList());
     }
 
