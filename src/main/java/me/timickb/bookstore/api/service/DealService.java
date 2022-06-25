@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public class DealService {
         Optional<Account> account = accountRepo.findById(accountId);
 
         if (account.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         List<Deal> deals = dealRepo.findAllByAccount(account.get());
