@@ -8,14 +8,13 @@ import me.timickb.bookstore.api.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.Entity;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/deals")
-public class DealController implements EntityController<Deal, DealRequest> {
+public class DealController implements CrudController<Deal, DealRequest> {
 
     private final DealService dealService;
 
@@ -25,7 +24,7 @@ public class DealController implements EntityController<Deal, DealRequest> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Deal>> getList(@RequestParam("page") Optional<Integer> page,
+    public ResponseEntity<List<Deal>> readList(@RequestParam("page") Optional<Integer> page,
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
@@ -33,7 +32,7 @@ public class DealController implements EntityController<Deal, DealRequest> {
     }
 
     @GetMapping("{dealId}")
-    public ResponseEntity<Deal> getOne(@PathVariable Long dealId) {
+    public ResponseEntity<Deal> readOne(@PathVariable Long dealId) {
         Optional<Deal> deal = dealService.getDealById(dealId);
         if (deal.isEmpty()) {
             return ResponseEntity.notFound().build();

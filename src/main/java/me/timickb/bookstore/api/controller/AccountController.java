@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/accounts")
-public class AccountController implements EntityController<AccountResponse, AccountAddRequest> {
+public class AccountController implements CrudController<AccountResponse, AccountAddRequest> {
     private final AccountService accountService;
 
     @Autowired
@@ -23,15 +23,15 @@ public class AccountController implements EntityController<AccountResponse, Acco
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getList(@RequestParam("page") Optional<Integer> page,
-                                                             @RequestParam("limit") Optional<Integer> limit) {
+    public ResponseEntity<List<AccountResponse>> readList(@RequestParam("page") Optional<Integer> page,
+                                                          @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
         return ResponseEntity.ok(accountService.getPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{accountId}")
-    public ResponseEntity<AccountResponse> getOne(@PathVariable Long accountId) {
+    public ResponseEntity<AccountResponse> readOne(@PathVariable Long accountId) {
         Optional<AccountResponse> response = accountService.getById(accountId);
         if (response.isEmpty()) {
             return ResponseEntity.notFound().build();

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
-public class BookController implements EntityController<Book, BookAddRequest> {
+public class BookController implements CrudController<Book, BookAddRequest> {
     private final BookService bookService;
 
     @Autowired
@@ -33,7 +33,7 @@ public class BookController implements EntityController<Book, BookAddRequest> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getList(@RequestParam("page") Optional<Integer> page,
+    public ResponseEntity<List<Book>> readList(@RequestParam("page") Optional<Integer> page,
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
@@ -41,7 +41,7 @@ public class BookController implements EntityController<Book, BookAddRequest> {
     }
 
     @GetMapping("{bookId}")
-    public ResponseEntity<Book> getOne(@PathVariable Long bookId) {
+    public ResponseEntity<Book> readOne(@PathVariable Long bookId) {
         Optional<Book> book = bookService.getById(bookId);
         if (book.isEmpty()) {
             return ResponseEntity.notFound().build();

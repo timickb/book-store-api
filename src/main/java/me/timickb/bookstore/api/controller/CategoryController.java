@@ -1,7 +1,6 @@
 package me.timickb.bookstore.api.controller;
 
 import me.timickb.bookstore.api.Application;
-import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.BookCategory;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.service.CategoryService;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
-public class CategoryController implements EntityController<BookCategory, BookCategory> {
+public class CategoryController implements CrudController<BookCategory, BookCategory> {
     private final CategoryService categoryService;
 
     @Autowired
@@ -23,15 +22,15 @@ public class CategoryController implements EntityController<BookCategory, BookCa
     }
 
     @GetMapping
-    public ResponseEntity<List<BookCategory>> getList(@RequestParam Optional<Integer> page,
-                                                      @RequestParam Optional<Integer> limit) {
+    public ResponseEntity<List<BookCategory>> readList(@RequestParam Optional<Integer> page,
+                                                       @RequestParam Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
         return ResponseEntity.ok(categoryService.getPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{categoryId}")
-    public ResponseEntity<BookCategory> getOne(@PathVariable Long categoryId) {
+    public ResponseEntity<BookCategory> readOne(@PathVariable Long categoryId) {
         Optional<BookCategory> response = categoryService.getById(categoryId);
         if (response.isEmpty()) {
             return ResponseEntity.notFound().build();
