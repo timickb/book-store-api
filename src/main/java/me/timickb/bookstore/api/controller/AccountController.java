@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/accounts")
-public class AccountController {
+public class AccountController implements EntityController<AccountResponse, AccountAddRequest> {
     private final AccountService accountService;
 
     @Autowired
@@ -23,7 +23,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAccounts(@RequestParam("page") Optional<Integer> page,
+    public ResponseEntity<List<AccountResponse>> getList(@RequestParam("page") Optional<Integer> page,
                                                              @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
@@ -31,7 +31,7 @@ public class AccountController {
     }
 
     @GetMapping("{accountId}")
-    public ResponseEntity<AccountResponse> getAccount(@PathVariable Long accountId) {
+    public ResponseEntity<AccountResponse> getOne(@PathVariable Long accountId) {
         Optional<AccountResponse> response = accountService.getById(accountId);
         if (response.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -40,7 +40,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createAccount(@RequestBody AccountAddRequest account) {
+    public ResponseEntity<PostResponse> create(@RequestBody AccountAddRequest account) {
         PostResponse response = accountService.create(account);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -49,7 +49,7 @@ public class AccountController {
     }
 
     @PutMapping("{accountId}")
-    public ResponseEntity<PostResponse> updateAccount(@RequestBody AccountAddRequest edited,
+    public ResponseEntity<PostResponse> update(@RequestBody AccountAddRequest edited,
                                                       @PathVariable Long accountId) {
         PostResponse response = accountService.update(edited, accountId);
         if (response.isSucceeded()) {
@@ -59,7 +59,7 @@ public class AccountController {
     }
 
     @DeleteMapping("{accountId}")
-    public ResponseEntity<PostResponse> deleteAccount(@PathVariable Long accountId) {
+    public ResponseEntity<PostResponse> delete(@PathVariable Long accountId) {
         PostResponse response = accountService.delete(accountId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);

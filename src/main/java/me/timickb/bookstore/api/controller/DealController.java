@@ -8,13 +8,14 @@ import me.timickb.bookstore.api.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.Entity;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/deals")
-public class DealController {
+public class DealController implements EntityController<Deal, DealRequest> {
 
     private final DealService dealService;
 
@@ -24,7 +25,7 @@ public class DealController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Deal>> getDeals(@RequestParam("page") Optional<Integer> page,
+    public ResponseEntity<List<Deal>> getList(@RequestParam("page") Optional<Integer> page,
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
@@ -32,12 +33,34 @@ public class DealController {
     }
 
     @GetMapping("{dealId}")
-    public ResponseEntity<Deal> getDeal(@PathVariable Long dealId) {
+    public ResponseEntity<Deal> getOne(@PathVariable Long dealId) {
         Optional<Deal> deal = dealService.getDealById(dealId);
         if (deal.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(deal.get());
+    }
+
+    @PostMapping
+    public ResponseEntity<PostResponse> create(@RequestBody DealRequest request) {
+        PostResponse response = dealService.makeDeal(request);
+        if (response.isSucceeded()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    public ResponseEntity<PostResponse> update(DealRequest request, Long id) {
+        return null;
+    }
+
+    @DeleteMapping("{dealId}")
+    public ResponseEntity<PostResponse> delete(@PathVariable Long dealId) {
+        PostResponse response = dealService.deleteDeal(dealId);
+        if (response.isSucceeded()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("account/{accountId}")
@@ -48,23 +71,5 @@ public class DealController {
     @GetMapping("book/{bookId}")
     public ResponseEntity<List<Deal>> getAllDealsForBook(@PathVariable Long bookId) {
         return ResponseEntity.ok(dealService.getAllForBook(bookId));
-    }
-
-    @PostMapping
-    public ResponseEntity<PostResponse> makeDeal(@RequestBody DealRequest request) {
-        PostResponse response = dealService.makeDeal(request);
-        if (response.isSucceeded()) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @DeleteMapping("{dealId}")
-    public ResponseEntity<PostResponse> deleteDeal(@PathVariable Long dealId) {
-        PostResponse response = dealService.deleteDeal(dealId);
-        if (response.isSucceeded()) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.badRequest().body(response);
     }
 }

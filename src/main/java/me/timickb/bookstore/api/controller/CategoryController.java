@@ -1,5 +1,7 @@
 package me.timickb.bookstore.api.controller;
 
+import me.timickb.bookstore.api.Application;
+import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.BookCategory;
 import me.timickb.bookstore.api.model.response.PostResponse;
 import me.timickb.bookstore.api.service.CategoryService;
@@ -12,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
-public class CategoryController {
+public class CategoryController implements EntityController<BookCategory, BookCategory> {
     private final CategoryService categoryService;
 
     @Autowired
@@ -21,16 +23,15 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookCategory>> getAllCategories() {
-        try {
-            return ResponseEntity.ok(categoryService.getAll());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<List<BookCategory>> getList(@RequestParam Optional<Integer> page,
+                                                      @RequestParam Optional<Integer> limit) {
+        if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
+        if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
+        return ResponseEntity.ok(categoryService.getPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{categoryId}")
-    public ResponseEntity<BookCategory> getCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<BookCategory> getOne(@PathVariable Long categoryId) {
         Optional<BookCategory> response = categoryService.getById(categoryId);
         if (response.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -39,7 +40,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createCategory(@RequestBody BookCategory category) {
+    public ResponseEntity<PostResponse> create(@RequestBody BookCategory category) {
         PostResponse response = categoryService.create(category);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -48,7 +49,7 @@ public class CategoryController {
     }
 
     @PutMapping("{categoryId}")
-    public ResponseEntity<PostResponse> updateCategory(@RequestBody BookCategory edited,
+    public ResponseEntity<PostResponse> update(@RequestBody BookCategory edited,
                                                       @PathVariable Long categoryId) {
         PostResponse response = categoryService.update(edited, categoryId);
         if (response.isSucceeded()) {
@@ -58,7 +59,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("{categoryId}")
-    public ResponseEntity<PostResponse> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<PostResponse> delete(@PathVariable Long categoryId) {
         PostResponse response = categoryService.delete(categoryId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);

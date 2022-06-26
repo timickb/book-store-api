@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
-public class BookController {
+public class BookController implements EntityController<Book, BookAddRequest> {
     private final BookService bookService;
 
     @Autowired
@@ -24,7 +24,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createBook(@RequestBody BookAddRequest book) {
+    public ResponseEntity<PostResponse> create(@RequestBody BookAddRequest book) {
         PostResponse response = bookService.create(book);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -33,7 +33,7 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks(@RequestParam("page") Optional<Integer> page,
+    public ResponseEntity<List<Book>> getList(@RequestParam("page") Optional<Integer> page,
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
@@ -41,7 +41,7 @@ public class BookController {
     }
 
     @GetMapping("{bookId}")
-    public ResponseEntity<Book> getBook(@PathVariable Long bookId) {
+    public ResponseEntity<Book> getOne(@PathVariable Long bookId) {
         Optional<Book> book = bookService.getById(bookId);
         if (book.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -50,12 +50,12 @@ public class BookController {
     }
 
     @PostMapping("filter")
-    public ResponseEntity<List<Book>> getBooksByFilter(@RequestBody BookFilter filter) {
+    public ResponseEntity<List<Book>> getByFilter(@RequestBody BookFilter filter) {
         return ResponseEntity.ok(bookService.getBooksByFilter(filter));
     }
 
     @PutMapping("{bookId}")
-    public ResponseEntity<PostResponse> updateBook(@RequestBody BookAddRequest edited, @PathVariable Long bookId) {
+    public ResponseEntity<PostResponse> update(@RequestBody BookAddRequest edited, @PathVariable Long bookId) {
         PostResponse response = bookService.update(edited, bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
@@ -64,7 +64,7 @@ public class BookController {
     }
 
     @DeleteMapping("{bookId}")
-    public ResponseEntity<PostResponse> deleteBook(@PathVariable Long bookId) {
+    public ResponseEntity<PostResponse> delete(@PathVariable Long bookId) {
         PostResponse response = bookService.delete(bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
