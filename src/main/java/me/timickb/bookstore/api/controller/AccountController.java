@@ -27,7 +27,7 @@ public class AccountController {
                                                              @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
-        return ResponseEntity.ok(accountService.getAccountsPageable(page.get(), limit.get()));
+        return ResponseEntity.ok(accountService.getPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{accountId}")
@@ -41,7 +41,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<PostResponse> createAccount(@RequestBody AccountAddRequest account) {
-        PostResponse response = accountService.createAccount(account);
+        PostResponse response = accountService.create(account);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -51,7 +51,7 @@ public class AccountController {
     @PutMapping("{accountId}")
     public ResponseEntity<PostResponse> updateAccount(@RequestBody AccountAddRequest edited,
                                                       @PathVariable Long accountId) {
-        PostResponse response = accountService.updateAccount(edited, accountId);
+        PostResponse response = accountService.update(edited, accountId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -60,7 +60,7 @@ public class AccountController {
 
     @DeleteMapping("{accountId}")
     public ResponseEntity<PostResponse> deleteAccount(@PathVariable Long accountId) {
-        PostResponse response = accountService.deleteAccount(accountId);
+        PostResponse response = accountService.delete(accountId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }

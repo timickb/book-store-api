@@ -1,4 +1,4 @@
-package me.timickb.bookstore.api.service;
+package me.timickb.bookstore.api.service.implementation;
 
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.BookCategory;

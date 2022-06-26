@@ -3,12 +3,9 @@ package me.timickb.bookstore.api.service;
 import me.timickb.bookstore.api.model.base.Book;
 import me.timickb.bookstore.api.model.base.BookCategory;
 import me.timickb.bookstore.api.model.request.AccountAddRequest;
-import me.timickb.bookstore.api.model.request.BookAddRequest;
 import me.timickb.bookstore.api.model.request.BookFilter;
-import org.junit.jupiter.api.Assertions;
+import me.timickb.bookstore.api.service.implementation.ValidationService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

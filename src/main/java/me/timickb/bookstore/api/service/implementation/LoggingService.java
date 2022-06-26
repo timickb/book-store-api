@@ -1,4 +1,4 @@
-package me.timickb.bookstore.api.service;
+package me.timickb.bookstore.api.service.implementation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoggingService {
     private final Logger logger = LoggerFactory.getLogger(LoggingService.class);
+    private final ApplicationArguments arguments;
 
     @Autowired
     public LoggingService(ApplicationArguments arguments) {
+        this.arguments = arguments;
     }
 
 

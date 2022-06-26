@@ -25,7 +25,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<PostResponse> createBook(@RequestBody BookAddRequest book) {
-        PostResponse response = bookService.createBook(book);
+        PostResponse response = bookService.create(book);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -37,12 +37,12 @@ public class BookController {
                                                @RequestParam("limit") Optional<Integer> limit) {
         if (page.isEmpty()) page = Optional.of(Application.DEFAULT_PAGE);
         if (limit.isEmpty()) limit = Optional.of(Application.DEFAULT_PAGE_LIMIT);
-        return ResponseEntity.ok(bookService.getBooksPageable(page.get(), limit.get()));
+        return ResponseEntity.ok(bookService.getPageable(page.get(), limit.get()));
     }
 
     @GetMapping("{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable Long bookId) {
-        Optional<Book> book = bookService.getBookById(bookId);
+        Optional<Book> book = bookService.getById(bookId);
         if (book.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -56,7 +56,7 @@ public class BookController {
 
     @PutMapping("{bookId}")
     public ResponseEntity<PostResponse> updateBook(@RequestBody BookAddRequest edited, @PathVariable Long bookId) {
-        PostResponse response = bookService.updateBook(edited, bookId);
+        PostResponse response = bookService.update(edited, bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -65,7 +65,7 @@ public class BookController {
 
     @DeleteMapping("{bookId}")
     public ResponseEntity<PostResponse> deleteBook(@PathVariable Long bookId) {
-        PostResponse response = bookService.deleteBook(bookId);
+        PostResponse response = bookService.delete(bookId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }

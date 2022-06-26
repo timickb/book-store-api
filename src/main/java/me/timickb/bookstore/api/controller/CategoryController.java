@@ -23,7 +23,7 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<BookCategory>> getAllCategories() {
         try {
-            return ResponseEntity.ok(categoryService.getAllCategories());
+            return ResponseEntity.ok(categoryService.getAll());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -40,7 +40,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<PostResponse> createCategory(@RequestBody BookCategory category) {
-        PostResponse response = categoryService.createCategory(category);
+        PostResponse response = categoryService.create(category);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -50,7 +50,7 @@ public class CategoryController {
     @PutMapping("{categoryId}")
     public ResponseEntity<PostResponse> updateCategory(@RequestBody BookCategory edited,
                                                       @PathVariable Long categoryId) {
-        PostResponse response = categoryService.updateCategory(edited, categoryId);
+        PostResponse response = categoryService.update(edited, categoryId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }
@@ -59,7 +59,7 @@ public class CategoryController {
 
     @DeleteMapping("{categoryId}")
     public ResponseEntity<PostResponse> deleteCategory(@PathVariable Long categoryId) {
-        PostResponse response = categoryService.deleteCategory(categoryId);
+        PostResponse response = categoryService.delete(categoryId);
         if (response.isSucceeded()) {
             return ResponseEntity.ok(response);
         }

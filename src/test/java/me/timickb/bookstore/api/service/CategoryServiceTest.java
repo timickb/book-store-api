@@ -25,7 +25,7 @@ public class CategoryServiceTest {
 
     @Test
     public void getAllCategories() {
-        List<BookCategory> categories = categoryService.getAllCategories();
+        List<BookCategory> categories = categoryService.getAll();
         Assertions.assertNotNull(categories);
         Mockito.verify(categoryRepo, Mockito.times(1)).findAll();
     }
@@ -45,7 +45,7 @@ public class CategoryServiceTest {
     public void createCategory() {
         BookCategory category = new BookCategory();
         category.setName("test");
-        PostResponse response = categoryService.createCategory(category);
+        PostResponse response = categoryService.create(category);
 
         Assertions.assertTrue(response.isSucceeded());
         Mockito.verify(categoryRepo, Mockito.times(1))
@@ -59,7 +59,7 @@ public class CategoryServiceTest {
 
         Mockito.doReturn(Optional.of(existing)).when(categoryRepo).findById(1L);
 
-        PostResponse response = categoryService.deleteCategory(1);
+        PostResponse response = categoryService.delete(1);
         Assertions.assertTrue(response.isSucceeded());
         Mockito.verify(categoryRepo, Mockito.times(1)).delete(existing);
     }

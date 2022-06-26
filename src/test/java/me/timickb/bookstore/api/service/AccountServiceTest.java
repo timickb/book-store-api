@@ -29,7 +29,7 @@ class AccountServiceTest {
 
     @Test
     void getAll() {
-        List<AccountResponse> accounts = accountService.getAllAccounts();
+        List<AccountResponse> accounts = accountService.getAll();
         Assertions.assertNotNull(accounts);
         Mockito.verify(accountRepo, Mockito.times(1)).findAll();
     }
@@ -51,7 +51,7 @@ class AccountServiceTest {
         account.setBalance(100);
         account.setEmail("somebody@somewhere.com");
         account.setPassword("12345678");
-        PostResponse response = accountService.createAccount(account);
+        PostResponse response = accountService.create(account);
         Assertions.assertTrue(response.isSucceeded());
 
         Mockito.verify(accountRepo, Mockito.times(1))
@@ -64,7 +64,7 @@ class AccountServiceTest {
         account.setBalance(100);
         account.setEmail("somebody@somewhere.com");
         account.setPassword("12345");
-        PostResponse response = accountService.createAccount(account);
+        PostResponse response = accountService.create(account);
         Assertions.assertFalse(response.isSucceeded());
     }
 
@@ -74,7 +74,7 @@ class AccountServiceTest {
         account.setBalance(100);
         account.setEmail("invalid email");
         account.setPassword("12345678");
-        PostResponse response = accountService.createAccount(account);
+        PostResponse response = accountService.create(account);
         Assertions.assertFalse(response.isSucceeded());
     }
 
@@ -90,7 +90,7 @@ class AccountServiceTest {
         account.setEmail("somebody@somewhere.com");
         account.setPassword("12345678");
 
-        PostResponse response = accountService.createAccount(account);
+        PostResponse response = accountService.create(account);
         Assertions.assertFalse(response.isSucceeded());
 
         Mockito.verify(accountRepo, Mockito.times(0))
@@ -102,7 +102,7 @@ class AccountServiceTest {
         Mockito.doReturn(Optional.of(new Account()))
                 .when(accountRepo)
                 .findById(1L);
-        PostResponse response = accountService.deleteAccount(1);
+        PostResponse response = accountService.delete(1);
 
         Assertions.assertTrue(response.isSucceeded());
         Mockito.verify(accountRepo, Mockito.times(1))
